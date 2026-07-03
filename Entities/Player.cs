@@ -1,7 +1,5 @@
 ﻿using Raylib_cs;
-using System.Data;
 using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Main;
 
@@ -17,7 +15,7 @@ public class Player
     public Player(Vector2 position)
     {
         this.position = position;
-        playerSprite = new Sprite("Resources/player_up.png", position, 3);
+        playerSprite = new Sprite("Resources/player.png", position, 3);
         handsSprite = new Sprite("Resources/player_hands.png", position, 3);
     }
 
