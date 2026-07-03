@@ -20,7 +20,6 @@ internal static class Program
         Sprite playerHands = new Sprite("Resources/player_hands.png", new Vector2(screenWidth / 2, screenHeight / 2), scale);
 
         float speed = 200;
-        float playerAngle = 0;
 
         while (!Raylib.WindowShouldClose())
         {
@@ -50,15 +49,11 @@ internal static class Program
                 direction = Vector2.Normalize(direction);
             }
 
-            Vector2 lookDir = mousePos - playerSprite.position;
-            float angle = MathF.Atan2(lookDir.Y, lookDir.X) * Raylib.RAD2DEG;
-            playerAngle = MathUtils.LerpAngle(playerAngle, angle, 10 * delta);
-
             playerSprite.position += direction * speed * delta;
-            playerSprite.rotation = angle + 90;
-
             playerHands.position = playerSprite.position;
-            playerHands.rotation = playerAngle + 90;
+
+            playerSprite.LookAt(mousePos, 100, delta);
+            playerHands.LookAt(mousePos, 10, delta);
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
@@ -73,23 +68,5 @@ internal static class Program
         playerHands.Unload();
 
         Raylib.CloseWindow();
-    }
-
-    static float LerpAngle(float from, float to, float amount)
-    {
-        float difference = WrapAngle(to - from + 100) - 100;
-        return from + difference * amount;
-    }
-
-    static float WrapAngle(float angle)
-    {
-        angle %= 360;
-
-        if (angle < 0)
-        {
-            angle += 360;
-        }
-
-        return angle;
     }
 }

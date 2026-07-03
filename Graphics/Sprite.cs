@@ -1,7 +1,5 @@
 ﻿using Raylib_cs;
-using System;
 using System.Numerics;
-using System.Reflection.Metadata;
 
 namespace Main;
 
@@ -27,7 +25,16 @@ public class Sprite
         Rectangle dest = new Rectangle(position.X, position.Y, texture.Width * scale, texture.Height * scale);
         Vector2 origin = new Vector2(texture.Width * scale / 2, texture.Height * scale / 2);
 
-        Raylib.DrawTexturePro(texture, source, dest, origin, rotation, Color.White);
+        Raylib.DrawTexturePro(texture, source, dest, origin, rotation + 90, Color.White);
+    }
+
+    public void LookAt(Vector2 target, float lerpSpeed, float delta)
+    {
+        Vector2 lookDir = target - position;
+        float angle = MathF.Atan2(lookDir.Y, lookDir.X) * Raylib.RAD2DEG;
+        float lerpedAngle = MathUtils.LerpAngle(rotation, angle, lerpSpeed * delta);
+
+        rotation = lerpedAngle;
     }
 
     public void Unload()
