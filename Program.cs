@@ -54,7 +54,7 @@ internal static class Program
 
             Vector2 lookDir = mousePos - playerPos;
             float angle = MathF.Atan2(lookDir.Y, lookDir.X) * Raylib.RAD2DEG;
-            playerAngle = LerpAngle(playerAngle, angle, 10 * delta);
+            playerAngle = MathUtils.LerpAngle(playerAngle, angle, 10 * delta);
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
