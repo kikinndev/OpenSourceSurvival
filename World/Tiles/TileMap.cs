@@ -4,7 +4,8 @@ namespace Main;
 
 public class TileMap
 {
-    public Dictionary<Vector2, Tile> tiles = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> worldTiles = new Dictionary<Vector2, Tile>();
+    public Dictionary<Vector2, Tile> objectTiles = new Dictionary<Vector2, Tile>();
 
     int width;
     int height;
@@ -17,21 +18,29 @@ public class TileMap
 
     public void GenerateWorld()
     {
-        tiles.Clear();
+        worldTiles.Clear();
+        objectTiles.Clear();
 
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                Vector2 position = new Vector2(x * GameConfig.GridSize, y * GameConfig.GridSize);
-                tiles[position] = new Tile(TileId.Grass, position);
+                Vector2 gridPos = new Vector2(x, y);
+                Vector2 worldPos = MathUtils.GridToWorld(gridPos);
+
+                worldTiles[gridPos] = new Tile(TileId.Grass, worldPos);
             }
         }
     }
 
     public void Draw()
     {
-        foreach (Tile tile in tiles.Values)
+        foreach (Tile tile in worldTiles.Values)
+        {
+            tile.Draw();
+        }
+
+        foreach (Tile tile in objectTiles.Values)
         {
             tile.Draw();
         }
@@ -39,6 +48,7 @@ public class TileMap
 
     public void Unload()
     {
-        tiles.Clear();
+        worldTiles.Clear();
+        objectTiles.Clear();
     }
 }

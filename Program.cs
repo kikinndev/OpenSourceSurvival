@@ -24,6 +24,8 @@ internal static class Program
 
         GridIndicator gridIndicator = new GridIndicator(camera);
 
+        WorldInteraction interaction = new WorldInteraction(tileMap);
+
         TileDatabase.Load();
         tileMap.GenerateWorld();
 
@@ -37,6 +39,7 @@ internal static class Program
             camera.Target = player.position;
 
             gridIndicator.Update(camera);
+            interaction.Update(gridIndicator.mouseWorldPos);
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);

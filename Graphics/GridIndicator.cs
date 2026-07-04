@@ -5,9 +5,9 @@ namespace Main;
 
 public class GridIndicator
 {
-    Vector2 mouseWorldPos;
-    Vector2 mouseGridPos;
-    Vector2 mouseTileWorldPos;
+    public Vector2 mouseWorldPos;
+    public Vector2 mouseGridPos;
+    public Vector2 mouseTileWorldPos;
 
     Sprite gridIndicator = new Sprite("Resources/grid.png", Vector2.Zero, GameConfig.Scale);
 
