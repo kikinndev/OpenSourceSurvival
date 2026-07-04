@@ -9,6 +9,7 @@ internal static class Program
     [System.STAThread]
     public static void Main()
     {
+        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
         Raylib.InitWindow(GameConfig.WindowWidth, GameConfig.WindowHeight, GameConfig.WindowTitle);
         Raylib.HideCursor();
 
@@ -38,7 +39,7 @@ internal static class Program
             }
 
             crosshair.Update();
-            player.Update(camera, delta);
+            player.Update(camera, tileMap, delta);
 
             camera.Target = player.position;
             camera.Offset = new Vector2(GameConfig.GetCenterScreen().X, GameConfig.GetCenterScreen().Y);
@@ -47,10 +48,9 @@ internal static class Program
             interaction.Update(gridIndicator.mouseWorldPos);
 
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.White);
+            Raylib.ClearBackground(Color.SkyBlue);
             Raylib.BeginMode2D(camera);
 
-            Raylib.DrawCircle(100, 100, 50, Color.Red);
             tileMap.Draw();
             gridIndicator.Draw();
             player.Draw();

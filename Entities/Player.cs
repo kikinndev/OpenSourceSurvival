@@ -18,7 +18,7 @@ public class Player
         handsSprite = new Sprite("Assets/Textures/Entity/player_hands.png", position, 3);
     }
 
-    public void Update(Camera2D camera, float delta)
+    public void Update(Camera2D camera, TileMap tileMap, float delta)
     {
         Vector2 mouseScreenPos = Raylib.GetMousePosition();
         Vector2 mouseWorldPos = Raylib.GetScreenToWorld2D(mouseScreenPos, camera);
@@ -41,7 +41,11 @@ public class Player
             direction.X += 1;
         }
 
-        position += direction * speed * delta;
+        Vector2 next_position = position + direction * speed * delta;
+        if (!tileMap.IsSolidAtWorldPos(next_position))
+        {
+            position = next_position;
+        }
         
         playerSprite.position = position;
         handsSprite.position = position;

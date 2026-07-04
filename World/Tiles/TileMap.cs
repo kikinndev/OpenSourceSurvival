@@ -33,6 +33,23 @@ public class TileMap
         }
     }
 
+    public bool IsSolidAtWorldPos(Vector2 worldPos)
+    {
+        Vector2 gridPos = MathUtils.WorldToGrid(worldPos);
+
+        if (objectTiles.ContainsKey(gridPos))
+        {
+            return TileDatabase.tileData[objectTiles[gridPos].id].isSolid;
+        }
+
+        if (worldTiles.ContainsKey(gridPos))
+        {
+            return TileDatabase.tileData[worldTiles[gridPos].id].isSolid;
+        }
+
+        return true;
+    }
+
     public void Draw()
     {
         foreach (Tile tile in worldTiles.Values)
