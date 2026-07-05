@@ -58,7 +58,7 @@ internal static class Program
             }
 
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.SkyBlue);
+            Raylib.ClearBackground(Color.Black);
             Raylib.BeginMode2D(camera);
 
             tileMap.Draw();
