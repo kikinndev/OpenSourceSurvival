@@ -9,8 +9,10 @@ public static class TileDatabase
 
     public static void Load()
     {
+        Add(TileId.Air, "Assets/Textures/Tiles/air.png", false);
         Add(TileId.Grass, "Assets/Textures/Tiles/grass.png", false);
         Add(TileId.Log, "Assets/Textures/Tiles/log.png", true);
+        Add(TileId.Plank, "Assets/Textures/Tiles/plank.png", true);
         Add(TileId.Table, "Assets/Textures/Tiles/table.png", true);
     }
 

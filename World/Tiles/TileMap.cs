@@ -24,6 +24,7 @@ public class TileMap(int width, int height)
                 Vector2 worldPos = MathUtils.GridToWorld(gridPos);
 
                 worldTiles[gridPos] = new Tile(TileId.Grass, worldPos);
+                objectTiles[gridPos] = new Tile(TileId.Air, worldPos);
             }
         }
     }

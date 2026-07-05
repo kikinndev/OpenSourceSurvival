@@ -13,10 +13,16 @@ public class WorldInteraction(Player player, TileMap tileMap)
 
         if (Raylib.IsMouseButtonDown(MouseButton.Left))
         {
-            // TODO: Make player place different tiles
             if (CanPlaceTile(gridPos))
             {
-                PlaceTile(TileId.Log, gridPos);
+                int holdingSlot = player.inventory.holdingSlot;
+                InventorySlot currentSlot = player.inventory.Get(holdingSlot);
+                TileId holdingTile = currentSlot.tileId;
+
+                if (holdingTile != TileId.Air && IsEmpty(gridPos, tileMap.objectTiles))
+                {
+                    PlaceTile(holdingTile, gridPos);
+                }
             }
         }
 
@@ -34,9 +40,10 @@ public class WorldInteraction(Player player, TileMap tileMap)
 
     public void BreakTile(Vector2 gridPos)
     {
+        Vector2 worldPos = MathUtils.GridToWorld(gridPos);
         if (tileMap.objectTiles.ContainsKey(gridPos))
         {
-            tileMap.objectTiles.Remove(gridPos);
+            tileMap.objectTiles[gridPos] = new Tile(TileId.Grass, worldPos);
         }
     }
 
@@ -48,5 +55,10 @@ public class WorldInteraction(Player player, TileMap tileMap)
         Rectangle playerRect = player.GetInteractionHitbox(player.position);
 
         return !Raylib.CheckCollisionRecs(tileRect, playerRect);
+    }
+
+    public bool IsEmpty(Vector2 gridPos, Dictionary<Vector2, Tile> objectTiles)
+    {
+        return !objectTiles.TryGetValue(gridPos, out Tile tile) || tile.id == TileId.Air;
     }
 }

@@ -7,7 +7,8 @@ namespace Main;
 public class Player
 {
     public AnimatedSprite playerSprite;
-    
+    public Inventory inventory = new();
+
     public Vector2 position;
     Vector2 targetPosition;
 
@@ -41,6 +42,9 @@ public class Player
         ));
 
         playerSprite.Play("idle_down");
+
+        inventory.Add(TileId.Log, 1);
+        inventory.Add(TileId.Plank, 1);
     } 
 
     public void Update(Camera2D camera, TileMap tileMap, float delta)
@@ -68,6 +72,26 @@ public class Player
         if (Raylib.IsKeyDown(KeyboardKey.D))
         {
             direction.X += 1;
+        }
+
+        float wheel = Raylib.GetMouseWheelMove();
+
+        if (wheel > 0)
+        {
+            inventory.holdingSlot -= 1;
+            if (inventory.holdingSlot < 0)
+            {
+                inventory.holdingSlot = inventory.slots.Length - 1;
+            }
+        }
+
+        if (wheel < 0)
+        {
+            inventory.holdingSlot += 1;
+            if (inventory.holdingSlot >= inventory.slots.Length - 1)
+            {
+                inventory.holdingSlot = 0;
+            }
         }
 
         if (direction.Y < 0)

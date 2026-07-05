@@ -1,6 +1,8 @@
 ﻿using System.Net.NetworkInformation;
 using System.Numerics;
+using ImGuiNET;
 using Raylib_cs;
+using rlImGui_cs;
 
 namespace Main;
 
@@ -11,17 +13,15 @@ internal static class Program
     {
         Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
         Raylib.InitWindow(GameConfig.WindowWidth, GameConfig.WindowHeight, GameConfig.WindowTitle);
-        Raylib.HideCursor();
 
-        Crosshair crosshair = new();
-        TileMap tileMap = new(16, 16);
+        TileMap tileMap = new(128, 128);
         Player player = new(new Vector2(GameConfig.GetCenterScreen().X, GameConfig.GetCenterScreen().Y));
 
         Camera2D camera = new();
         camera.Target = player.position;
         camera.Offset = new Vector2(GameConfig.GetCenterScreen().X, GameConfig.GetCenterScreen().Y);
         camera.Rotation = 0.0f;
-        camera.Zoom = 1.0f;
+        camera.Zoom = 1f;
 
         GridIndicator gridIndicator = new(camera);
 
@@ -29,6 +29,8 @@ internal static class Program
 
         TileDatabase.Load();
         tileMap.GenerateWorld();
+
+        rlImGui.Setup(true);
 
         while (!Raylib.WindowShouldClose())
         {
@@ -38,14 +40,22 @@ internal static class Program
                 Raylib.ToggleFullscreen();
             }
 
-            crosshair.Update();
             player.Update(camera, tileMap, delta);
 
             camera.Target = player.position;
             camera.Offset = new Vector2(GameConfig.GetCenterScreen().X, GameConfig.GetCenterScreen().Y);
 
-            gridIndicator.Update(camera);
-            interaction.Update(gridIndicator.mouseWorldPos);
+            int holdingSlot = player.inventory.holdingSlot;
+            InventorySlot currentSlot = player.inventory.Get(holdingSlot);
+            TileId currentTile = currentSlot.tileId;
+            Texture2D currentTileTexture = TileDatabase.GetTexture(currentTile);
+
+            ImGuiIOPtr io = ImGui.GetIO();
+            if (!io.WantCaptureMouse)
+            {
+                gridIndicator.Update(camera);
+                interaction.Update(gridIndicator.mouseWorldPos);
+            }
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.SkyBlue);
@@ -57,18 +67,29 @@ internal static class Program
 
             Raylib.EndMode2D();
 
-            crosshair.Draw();
+            Raylib.DrawTexture(currentTileTexture, Raylib.GetMouseX() + 16, Raylib.GetMouseY() + 16, Color.White);
+
+            rlImGui.Begin();
+            for (int i = 0; i < player.inventory.slots.Length; i++)
+            {
+                InventorySlot slot = player.inventory.Get(i);
+                ImGui.Text($"Slot: {i + 1} | {slot.tileId}");
+            }
+            ImGui.NewLine();
+            ImGui.Text($"Current Slot: {player.inventory.holdingSlot + 1}");
+            rlImGui.End();
 
             Raylib.EndDrawing();
         }
 
         TileDatabase.Unload();
 
-        crosshair.Unload();
         tileMap.Unload();
         gridIndicator.Unload();
         player.Unload();
-        
+
+        rlImGui.Shutdown();
+
         Raylib.CloseWindow();
     }
 }
